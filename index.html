@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Forest Focus | Login</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        #username {
+            margin-bottom: 15px !important;
+        }
+        /* الصندوق السحري اللي هيجبر العين تقعد جوه الباسورد بالظبط */
+        .input-group-custom {
+            position: relative;
+            width: 100%;
+            margin-bottom: 20px !important;
+        }
+        .input-group-custom input {
+            width: 100%;
+            margin-bottom: 0 !important; /* إلغاء المارجن عشان الصندوق هو اللي بيتحكم */
+            padding-right: 45px !important; /* مساحة مريحة جوه الخانة عشان الكلام ميتغطاش */
+        }
+        /* تثبيت العين في السنتر العمودي وفي الجنب اليمين بالملي */
+        .toggle-eye {
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            cursor: pointer;
+            font-size: 16px;
+            z-index: 10;
+            opacity: 0.6;
+            user-select: none;
+        }
+        .toggle-eye:hover {
+            opacity: 1;
+        }
+    </style>
+</head>
+<body>
+<div class="login-container">
+    <div class="top-bar login-top-bar">
+        <button id="themeToggle" class="action-icon-btn">🌙 Dark</button>
+    </div>
+    
+    <div class="logo-area">
+        <img src="https://i.postimg.cc/x1m7dp37/1784212950090.png" class="logo-img" alt="Forest Focus Logo">
+        <h1>Forest Focus</h1>
+        <p class="tagline">Smart Study Planner</p>
+    </div>
+
+    <input type="text" id="username" placeholder="Username" autocomplete="username">
+    
+    <div class="input-group-custom">
+        <input type="password" id="password" placeholder="Password" autocomplete="current-password">
+        <span id="togglePassword" class="toggle-eye">👁️</span>
+    </div>
+    
+    <button id="loginBtn" type="button">Login</button>
+    
+    <p style="margin-top: 25px; font-size: 14px; text-align: center;" class="login-link">
+        Don't have an account? <a href="signup.html">Create one here</a>
+    </p>
+</div>
+
+<script>
+    function applySavedTheme() {
+        const savedTheme = localStorage.getItem('theme');
+        const btn = document.getElementById('themeToggle');
+        if (savedTheme === 'dark') {
+            document.body.classList.add('dark-theme');
+            if(btn) btn.innerText = "☀️ Light";
+        } else {
+            document.body.classList.remove('dark-theme');
+            if(btn) btn.innerText = "🌙 Dark";
+        }
+    }
+    document.addEventListener('DOMContentLoaded', applySavedTheme);
+
+    const passwordInput = document.getElementById('password');
+    const togglePasswordBtn = document.getElementById('togglePassword');
+
+    togglePasswordBtn.addEventListener('click', () => {
+        if (passwordInput.type === 'password') {
+            passwordInput.type = 'text';
+            togglePasswordBtn.innerText = '🙈';
+        } else {
+            passwordInput.type = 'password';
+            togglePasswordBtn.innerText = '👁️';
+        }
+    });
+
+    document.getElementById('loginBtn').addEventListener('click', () => {
+        const u = document.getElementById('username').value.trim();
+        const p = document.getElementById('password').value.trim();
+        
+        let accounts = JSON.parse(localStorage.getItem('userAccounts')) || {"Guest": "1234"};
+        
+        if(accounts[u] && accounts[u] === p) {
+            localStorage.setItem('currentUser', u);
+            window.location.href = 'dashboard.html';
+        } else {
+            alert('Invalid Username or Password!');
+        }
+    });
+
+    const themeBtn = document.getElementById('themeToggle');
+    themeBtn.addEventListener('click', () => {
+        document.body.classList.toggle('dark-theme');
+        const isDark = document.body.classList.contains('dark-theme');
+        themeBtn.innerText = isDark ? "☀️ Light" : "🌙 Dark";
+        localStorage.setItem('theme', isDark ? 'dark' : 'light');
+    });
+</script>
+</body>
+</html>

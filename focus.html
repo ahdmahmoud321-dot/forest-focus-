@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Forest Focus - Focus Session</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="focus.css">
+    <style>
+        body.dark-theme { background-color: #0F172A; color: #F8FAFC; }
+        .navbar {
+            background: rgba(15, 23, 42, 0.9);
+            border-bottom: 1px solid rgba(0, 210, 255, 0.3);
+            display: flex; gap: 20px; padding: 15px; justify-content: center;
+        }
+        .navbar a { color: #94A3B8; text-decoration: none; font-weight: 600; font-size: 14px; }
+        .navbar a.active { color: #00d2ff !important; text-shadow: 0 0 10px rgba(0,210,255,0.6); }
+
+        .glass-container {
+            background: #1E293B; border: 1px solid rgba(0, 210, 255, 0.2);
+            padding: 30px; border-radius: 24px; width: 90%; max-width: 400px;
+            text-align: center; box-shadow: 0 10px 30px rgba(0, 210, 255, 0.1); margin: 40px auto;
+        }
+        .timer-btn {
+            background: #00d2ff; color: #0F172A; border: none; padding: 12px 24px;
+            font-weight: bold; border-radius: 10px; cursor: pointer; transition: 0.2s; margin: 5px;
+        }
+        .timer-btn:hover { transform: translateY(-2px); box-shadow: 0 0 15px rgba(0,210,255,0.5); }
+        .progress-bar-bg { background: #334155; height: 12px; border-radius: 10px; overflow: hidden; margin-top: 10px; }
+        .progress-bar-fill { background: #22C55E; height: 100%; width: 0%; transition: width 0.5s ease; box-shadow: 0 0 10px #22C55E; }
+    </style>
+</head>
+<body class="dark-theme">
+
+    <div class="navbar">
+        <a href="dashboard.html">📋 Dashboard</a>
+        <a href="focus.html" class="active">🎯 Focus Mode</a>
+    </div>
+
+    <div class="glass-container">
+        <h2>🎯 Focus Session</h2>
+        <p class="subtitle">Stay focused for 30 minutes to grow your stats</p>
+
+        <div class="circle-timer-wrap">
+            <svg class="timer-svg" viewBox="0 0 100 100">
+                <circle class="bg-circle" cx="50" cy="50" r="45"></circle>
+                <circle id="progressCircle" stroke="#00d2ff" stroke-width="6" fill="transparent" r="45" cx="50" cy="50" stroke-dasharray="283" stroke-dashoffset="0"></circle>
+            </svg>
+            <div id="timerDisplay">30:00</div>
+        </div>
+
+        <div class="control-panel">
+            <button id="startBtn" class="timer-btn">Start</button>
+            <button id="pauseBtn" class="timer-btn" style="background:#64748B; color:white;">Pause</button>
+            <button id="resetBtn" class="timer-btn" style="background:#EF4444; color:white;">Reset</button>
+        </div>
+
+        <div class="daily-goals-card" style="margin-top: 30px; text-align: left; background: rgba(255,255,255,0.02); padding: 15px; border-radius: 14px; border: 1px solid #334155;">
+            <div style="display: flex; justify-content: space-between; font-size: 13px; font-weight: bold;">
+                <span id="sessionsCountLabel">Total Focused Today: 0 mins</span>
+                <span id="goalPercentText">0%</span>
+            </div>
+            <div class="progress-bar-bg">
+                <div id="goalBarFill" class="progress-bar-fill"></div>
+            </div>
+            <p style="font-size: 11px; color: #94A3B8; margin-top: 8px; text-align: center;">Every 30 minutes pushes your progress bar forward!</p>
+        </div>
+    </div>
+
+    <script>
+    const currentUser = localStorage.getItem('currentUser') || 'Guest';
+    function getUserKey(name) { return currentUser + "_" + name; }
+
+    let defaultTime = 30 * 60; // 30 دقيقة
+    let timeLeft = defaultTime;
+    let timer = null;
+    let isRunning = false;
+
+    const timerDisplay = document.getElementById('timerDisplay');
+    const startBtn = document.getElementById('startBtn');
+    const pauseBtn = document.getElementById('pauseBtn');
+    const resetBtn = document.getElementById('resetBtn');
+    const progressCircle = document.getElementById('progressCircle');
+
+    function updateDisplay() {
+        let mins = Math.floor(timeLeft / 60);
+        let secs = timeLeft % 60;
+        timerDisplay.innerText = `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+        
+        let pct = (timeLeft / defaultTime) * 283;
+        progressCircle.style.strokeDashoffset = 283 - pct;
+    }
+
+    function loadStats() {
+        let totalMins = parseInt(localStorage.getItem(getUserKey('totalMinutes')) || '0');
+        let goalMinutes = 150; 
+        let pct = Math.min(100, Math.round((totalMins / goalMinutes) * 100));
+        
+        document.getElementById('goalPercentText').innerText = `${pct}%`;
+        document.getElementById('goalBarFill').style.width = `${pct}%`;
+        document.getElementById('sessionsCountLabel').innerText = `Focused Today: ${totalMins} Mins`;
+    }
+
+    // الزرار والكود الجديد اللي سألتي عليه مكانه هنا بالظبط:
+    startBtn.addEventListener('click', () => {
+        if (isRunning) return; isRunning = true;
+        timer = setInterval(() => {
+            if (timeLeft > 0) { 
+                timeLeft--; 
+                updateDisplay(); 
+            } 
+            else {
+                clearInterval(timer); 
+                isRunning = false;
+                
+                // استدعاء البيانات الحالية للمستخدم
+                let currentPoints = parseInt(localStorage.getItem(getUserKey('points')) || '0');
+                let currentMins = parseInt(localStorage.getItem(getUserKey('totalMinutes')) || '0');
+                
+                // التعديل الجديد: إعطاء 5 نقاط فقط عند انتهاء الـ 30 دقيقة
+                localStorage.setItem(getUserKey('points'), currentPoints + 5);
+                localStorage.setItem(getUserKey('totalMinutes'), currentMins + 30);
+                
+                alert("🎉 أحسنتِ! انتهت الجلسة بنجاح وحصلتِ على 5 نقاط وزادت غابتك نمواً! 🌳");
+                
+                timeLeft = defaultTime; 
+                updateDisplay(); 
+                loadStats();
+            }
+        }, 1000);
+    });
+
+    pauseBtn.addEventListener('click', () => { clearInterval(timer); isRunning = false; });
+    resetBtn.addEventListener('click', () => { clearInterval(timer); isRunning = false; timeLeft = defaultTime; updateDisplay(); });
+
+    updateDisplay(); 
+    loadStats();
+</script>
+
+</body>
+</html>

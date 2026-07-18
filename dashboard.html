@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en" id="htmlTag">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Forest Focus | Dashboard</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="container">
+    <div class="top-bar">
+        <button id="themeToggle" class="action-icon-btn">🌙 Dark</button>
+        <button id="langToggle" class="action-icon-btn">🌐 EN | AR</button>
+    </div>
+
+    <div class="logo-area">
+        <img src="https://i.postimg.cc/x1m7dp37/1784212950090.png" class="logo-img" alt="Forest Focus Logo">
+        <h1 id="mainTitle">Forest Focus</h1>
+        <p class="tagline" id="mainSubtitle">Smart Study Planner</p>
+    </div>
+
+    <p id="quoteText" class="quote-box"></p>
+
+    <div class="progress-section">
+        <div class="progress-header">
+            <span id="welcomeText">👋 Welcome</span>
+            <span id="progressPercent">0%</span>
+        </div>
+        <div class="progress-bar-bg">
+            <div id="progressBarFill" class="progress-bar-fill"></div>
+        </div>
+    </div>
+
+    <div class="points-display-card">
+        🌟 <span id="pointsLabel">Points :</span> <span id="pointsText">0</span>
+    </div>
+
+    <div class="badges-row">
+        <div id="badge1" class="badge-item">🏅 First Task</div>
+        <div id="badge2" class="badge-item">🏅 Scholar</div>
+        <div id="badge3" class="badge-item">🏅 Elite</div>
+    </div>
+
+    <div class="input-box">
+        <input id="taskInput" type="text" placeholder="Enter a task...">
+        <select id="taskPriority">
+            <option value="🟢">Normal 🟢</option>
+            <option value="🟡">Medium 🟡</option>
+            <option value="🔴">Urgent 🔴</option>
+        </select>
+        <input id="taskDate" type="datetime-local">
+        <button id="addBtn">Add Task</button>
+    </div>
+
+    <div class="search-clear-area">
+        <input id="searchInput" type="text" placeholder="Search Task...">
+        <button id="clearAllBtn" class="btn-danger">🧹 Clear All</button>
+    </div>
+
+    <h3 id="tasksHeading">My Tasks</h3>
+    <ul id="taskList"></ul>
+
+    <div style="display:flex; justify-content:space-between; margin-top:20px; font-size:13px; color:var(--muted);">
+        <span><span id="statTotal">Total :</span> <span id="totalTasks">0</span></span>
+        <span><span id="statDone">Done :</span> <span id="completedTasks">0</span></span>
+        <span><span id="statLeft">Left :</span> <span id="remainingTasks">0</span></span>
+    </div>
+
+    <br>
+    <a href="focus.html" id="focusModeLink" class="primary-btn" style="text-decoration:none; display:block; text-align:center;">🎯 Focus Mode</a>
+    <br>
+
+    <div class="game-center">
+        <button id="openForestBtn" class="game-btn">🌲 <span id="btnForestText">Digital Forest</span></button>
+        <button id="openBoxBtn" class="game-btn">🎁 <span id="btnBoxText">Reward Box</span></button>
+    </div>
+
+    <p class="footer-credit">© 2026 Developed by Ahd</p>
+</div>
+
+<div id="forestModal" class="modal-overlay">
+    <div class="modal-content" style="max-width: 450px; width: 90%;">
+        <span id="closeForestBtn" style="position:absolute; top:10px; right:15px; cursor:pointer; font-size:25px;">&times;</span>
+        <h3 id="forestTitle">🌲 Digital Forest</h3>
+        <p class="tagline">Your achievements visual forest</p>
+
+        <div id="forestGrid" class="forest-grid-container"></div>
+        
+        <h3 id="shopTitle" style="margin-top: 25px;">🛒 Plant Store</h3>
+        <div class="game-center">
+            <button class="buy-tree-btn" data-type="tree" data-cost="20">🌳 Tree (20)</button>
+            <button class="buy-tree-btn" data-type="pine" data-cost="40">🌲 Pine (40)</button>
+            <button class="buy-tree-btn" data-type="sakura" data-cost="60">🌸 Sakura (60)</button>
+            <button class="buy-tree-btn" data-type="palm" data-cost="80">🌴 Palm (80)</button>
+        </div>
+    </div>
+</div>
+
+<div id="rewardBoxModal" class="modal-overlay">
+    <div class="modal-content">
+        <span id="closeBoxBtn" style="position:absolute; top:10px; right:15px; cursor:pointer; font-size:25px; color:var(--danger); font-weight:bold;">&times;</span>
+        <h3 id="boxModalTitle">🎁 Tree Reward Box</h3>
+        <p id="boxSubText" class="tagline">Open the box to get a random tree!</p>
+        
+        <div id="boxAnimationDisplay" class="box-animation-display">🎁</div>
+        <p id="rewardResultText" style="text-align:center; font-weight:bold; margin:15px 0; min-height:20px; color:var(--success);"></p>
+        <button id="claimBoxBtn">Open Box (50 🌟)</button>
+    </div>
+</div>
+
+<script src="dashboard.js"></script>
+</body>
+</html>
